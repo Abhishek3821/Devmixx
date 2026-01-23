@@ -8,9 +8,9 @@ function Services() {
   return (
     <>
       <ServiceHero/>
-      <Portfolio/>
       <ServicesSection/>
       <CTASection/>
+      <Portfolio/>
     </>
   )
 }
