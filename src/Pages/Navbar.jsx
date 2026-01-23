@@ -1,138 +1,165 @@
-import { useState } from "react";
-import { ChevronDown, Menu, X } from "lucide-react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Menu, X } from "lucide-react";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { motion, AnimatePresence, useScroll } from "framer-motion";
 
 export default function Navbar() {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeMobile, setActiveMobile] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const lastScrollY = useRef(0);
+
+  /* ======================
+     SCROLL PROGRESS
+  ====================== */
+  const { scrollYProgress } = useScroll();
+
+  /* ======================
+     ROUTE BASED COLOR
+  ====================== */
+  const routeTheme = {
+    "/": "bg-black/70",
+    "/services": "bg-black/70",
+    "/projects": "bg-neutral-900/70",
+    "/aboutUs": "bg-zinc-900/70",
+    "/contact": "bg-slate-900/70",
+  };
+
+  const currentBg =
+    routeTheme[Object.keys(routeTheme).find((r) =>
+      location.pathname.startsWith(r)
+    )] || "bg-black/70";
+
+  /* ======================
+     HIDE / SHOW ON SCROLL
+  ====================== */
+  useEffect(() => {
+    const handleScroll = () => {
+      const current = window.scrollY;
+
+      if (current > lastScrollY.current && current > 80) {
+        setHidden(true);
+      } else {
+        setHidden(false);
+      }
+
+      lastScrollY.current = current;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navItems = [
     { name: "Home", path: "/" },
-    { name: "Service", path: "/services" },
+    { name: "Services", path: "/services" },
     { name: "Projects", path: "/project" },
-    { name: "About us", path: "/aboutUs" },
+    { name: "About Us", path: "/aboutUs" },
     { name: "Contact", path: "/contact" },
   ];
 
   const goTo = (path) => {
     navigate(path);
     setMobileOpen(false);
-    setActiveMobile(null);
   };
 
   return (
-    <header className="relative z-50 w-full bg-black text-white">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="flex h-20 items-center justify-between">
-          {/* LOGO */}
-          <div
-            onClick={() => goTo("/")}
-            className="flex items-center gap-2 text-xl font-bold cursor-pointer"
-          >
-            <div className="flex gap-1 text-blue-500">
-              <span className="h-4 w-4 rotate-45 border-2 border-blue-500"></span>
-              <span className="h-4 w-4 -rotate-45 border-2 border-blue-500"></span>
-            </div>
-            <span className="text-blue-500">Devmixx</span>
-          </div>
+    <>
+      {/* SCROLL PROGRESS BAR */}
+      <motion.div
+        style={{ scaleX: scrollYProgress }}
+        className="fixed top-0 left-0 right-0 z-[60] h-[2px] origin-left bg-blue-500"
+      />
 
-          {/* DESKTOP MENU */}
-          <nav className="hidden lg:flex items-center gap-10 text-sm">
-            {navItems.map((item) => (
-              <div key={item.name} className="group relative">
-                {item.path ? (
-                  <NavLink
-                    to={item.path}
-                    className={({ isActive }) =>
-                      `flex items-center gap-1 ${
-                        isActive ? "text-blue-400" : "hover:text-blue-400"
-                      }`
-                    }
-                  >
-                    {item.name}
-                  </NavLink>
-                ) : (
-                  <div className="flex cursor-pointer items-center gap-1 hover:text-blue-400">
-                    {item.name}
-                    <ChevronDown size={14} />
-                  </div>
-                )}
+      {/* NAVBAR */}
+      <motion.header
+        animate={{ y: hidden ? "-100%" : "0%" }}
+        transition={{ duration: 0.35, ease: "easeOut" }}
+        className={`fixed top-0 z-50 w-full backdrop-blur-xl border-b border-white/10 ${currentBg}`}
+      >
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="flex h-20 items-center justify-between">
 
-                {/* underline */}
-                <span className="absolute -bottom-2 left-0 h-[2px] w-0 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
-
-                {/* DROPDOWN */}
-                {item.dropdown && (
-                  <div className="invisible absolute top-10 left-0 min-w-[220px] rounded-lg bg-[#222] p-4 opacity-0 shadow-xl transition-all duration-200 group-hover:visible group-hover:opacity-100">
-                    <ul className="flex flex-col gap-3">
-                      {item.dropdown.map((sub) => (
-                        <li
-                          key={sub.label}
-                          onClick={() => goTo(sub.path)}
-                          className="cursor-pointer text-sm text-gray-300 hover:text-blue-400"
-                        >
-                          {sub.label}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+            {/* LOGO */}
+            <div
+              onClick={() => goTo("/")}
+              className="flex cursor-pointer items-center gap-2 text-xl font-bold select-none"
+            >
+              <div className="flex gap-1 text-blue-500">
+                <span className="h-4 w-4 rotate-45 border-2 border-blue-500" />
+                <span className="h-4 w-4 -rotate-45 border-2 border-blue-500" />
               </div>
-            ))}
-          </nav>
+              <span className="tracking-wide text-blue-500">
+                Devmixx
+              </span>
+            </div>
 
-          {/* MOBILE BUTTON */}
-          <button
-            className="lg:hidden"
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            {mobileOpen ? <X size={26} /> : <Menu size={26} />}
-          </button>
+            {/* DESKTOP NAV */}
+            <nav className="hidden lg:flex items-center gap-10 text-sm font-medium">
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.name}
+                  to={item.path}
+                  className={({ isActive }) =>
+                    `relative transition-colors duration-300 ${
+                      isActive
+                        ? "text-blue-400"
+                        : "text-gray-300 hover:text-blue-400"
+                    }`
+                  }
+                >
+                  {item.name}
+                </NavLink>
+              ))}
+            </nav>
+
+            {/* CTA */}
+            <div className="hidden lg:block">
+              <button
+                onClick={() => goTo("/contact")}
+                className="rounded-full bg-blue-500 px-5 py-2 text-sm font-semibold text-white hover:bg-blue-600 transition"
+              >
+                Get in Touch
+              </button>
+            </div>
+
+            {/* MOBILE */}
+            <button
+              className="lg:hidden text-gray-200"
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
+              {mobileOpen ? <X size={26} /> : <Menu size={26} />}
+            </button>
+          </div>
         </div>
-      </div>
+      </motion.header>
 
       {/* MOBILE MENU */}
-      <div
-        className={`lg:hidden transition-all duration-300 ${
-          mobileOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
-        } overflow-hidden bg-black`}
-      >
-        <div className="flex flex-col px-6 py-6 text-sm">
-          {navItems.map((item) => (
-            <div key={item.name} className="border-b border-white/10 py-3">
-              <div
-                className="flex cursor-pointer items-center justify-between"
-                onClick={() =>
-                  item.dropdown
-                    ? setActiveMobile(
-                        activeMobile === item.name ? null : item.name,
-                      )
-                    : goTo(item.path)
-                }
-              >
-                <span>{item.name}</span>
-                {item.dropdown && <ChevronDown size={16} />}
-              </div>
-
-              {/* MOBILE DROPDOWN */}
-              {item.dropdown && activeMobile === item.name && (
-                <ul className="mt-3 flex flex-col gap-2 pl-4 text-gray-400">
-                  {item.dropdown.map((sub) => (
-                    <li
-                      key={sub.label}
-                      onClick={() => goTo(sub.path)}
-                      className="cursor-pointer hover:text-blue-400"
-                    >
-                      {sub.label}
-                    </li>
-                  ))}
-                </ul>
-              )}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25 }}
+            className="fixed top-20 z-40 w-full bg-black/95 backdrop-blur-xl border-b border-white/10 lg:hidden"
+          >
+            <div className="flex flex-col px-6 py-6 text-sm">
+              {navItems.map((item) => (
+                <button
+                  key={item.name}
+                  onClick={() => goTo(item.path)}
+                  className="border-b border-white/10 py-4 text-left text-gray-300 hover:text-blue-400 transition"
+                >
+                  {item.name}
+                </button>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-    </header>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

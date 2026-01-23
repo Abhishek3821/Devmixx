@@ -2,7 +2,7 @@ import React from "react";
 
 const Hero = () => {
   return (
-    <div className="relative isolate overflow-hidden pt-10 pb-16 sm:pb-24 min-h-screen flex flex-col bg-slate-950 text-slate-100">
+    <div className="relative isolate overflow-hidden pt-10 pb-4 sm:pb-24 min-h-screen flex flex-col bg-slate-950 text-slate-100">
       {/* Background Gradients */}
       <div
         className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80 pointer-events-none"

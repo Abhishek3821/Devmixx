@@ -6,48 +6,9 @@ import {
   Palette,
   BarChart3,
   PenTool,
+  ArrowUpRight,
 } from "lucide-react";
-
-/* =======================
-   SERVICE CARD (INLINE)
-======================= */
-const ServiceCard = ({ category }) => {
-  const Icon = category.icon;
-
-  return (
-    <div className="group relative rounded-2xl overflow-hidden bg-black border border-white/10 hover:border-white/20 transition-all duration-300">
-      {/* Background Image */}
-      <img
-        src={category.imageUrl}
-        alt={category.title}
-        className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-30 transition-opacity duration-500"
-      />
-
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black"></div>
-
-      {/* Content */}
-      <div className="relative z-10 p-8 h-full flex flex-col">
-        <div className="flex items-center gap-3 mb-4">
-          <Icon className={`w-8 h-8 ${category.color}`} />
-          <h3 className="text-2xl font-bold text-white">
-            {category.title}
-          </h3>
-        </div>
-
-        <p className="text-gray-400 mb-6">
-          {category.description}
-        </p>
-
-        <ul className="space-y-2 text-sm text-gray-300">
-          {category.services.map((service, index) => (
-            <li key={index}>• {service.name}</li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
-};
+import { useNavigate, useParams } from "react-router-dom";
 
 /* =======================
    SERVICES DATA
@@ -64,7 +25,7 @@ const SERVICE_CATEGORIES = [
       { name: "AI SEO" },
       { name: "Local SEO" },
       { name: "On Page SEO" },
-      { name: "Link Building (Off Page SEO)" },
+      { name: "Link Building" },
       { name: "Ecommerce SEO" },
       { name: "Technical SEO" },
       { name: "SEO Audits" },
@@ -84,8 +45,7 @@ const SERVICE_CATEGORIES = [
       { name: "Custom Website Development" },
       { name: "Website Maintenance" },
       { name: "Website Migration" },
-      { name: "Page Speed Optimisation Service" },
-      { name: "Website Development" },
+      { name: "Page Speed Optimization" },
       { name: "API Integration" },
     ],
   },
@@ -98,12 +58,10 @@ const SERVICE_CATEGORIES = [
     imageUrl: "https://picsum.photos/800/600?random=3",
     services: [
       { name: "Facebook Marketing" },
-      { name: "Youtube Marketing" },
       { name: "Instagram Marketing" },
-      { name: "Pinterest Marketing" },
-      { name: "Linkedin Marketing" },
+      { name: "Youtube Marketing" },
+      { name: "LinkedIn Marketing" },
       { name: "Twitter Marketing" },
-      { name: "SMO Service" },
     ],
   },
   {
@@ -111,15 +69,12 @@ const SERVICE_CATEGORIES = [
     title: "Branding Service",
     icon: Palette,
     color: "text-yellow-400",
-    description:
-      "Create a lasting identity that resonates with your customers.",
+    description: "Create a lasting identity that resonates with customers.",
     imageUrl: "https://picsum.photos/800/600?random=4",
     services: [
       { name: "Logo Design" },
       { name: "UI/UX Design" },
-      { name: "Website Design" },
-      { name: "Graphics Design" },
-      { name: "Reputation Management" },
+      { name: "Graphic Design" },
       { name: "Brand Videos" },
     ],
   },
@@ -128,15 +83,14 @@ const SERVICE_CATEGORIES = [
     title: "PPC Service",
     icon: BarChart3,
     color: "text-orange-400",
-    description:
-      "Maximize ROI with targeted pay-per-click advertising campaigns.",
+    description: "Maximize ROI with targeted advertising campaigns.",
     imageUrl: "https://picsum.photos/800/600?random=5",
     services: [
-      { name: "Google Ad Management" },
-      { name: "Facebook / Meta Ad Management" },
-      { name: "Instagram Ad Management" },
-      { name: "Linkedin Ad Management" },
-      { name: "Youtube Ad Management" },
+      { name: "Google Ads" },
+      { name: "Meta Ads" },
+      { name: "Instagram Ads" },
+      { name: "LinkedIn Ads" },
+      { name: "Youtube Ads" },
     ],
   },
   {
@@ -144,42 +98,172 @@ const SERVICE_CATEGORIES = [
     title: "Content Marketing",
     icon: PenTool,
     color: "text-emerald-400",
-    description: "Compelling content that drives traffic and converts leads.",
+    description: "Content that drives traffic and conversions.",
     imageUrl: "https://picsum.photos/800/600?random=6",
     services: [
-      { name: "Content Writing Services" },
-      { name: "Copywriting Services" },
-      { name: "Email Marketing Services" },
+      { name: "Content Writing" },
+      { name: "Copywriting" },
+      { name: "Email Marketing" },
     ],
   },
 ];
 
 /* =======================
+   BREADCRUMB
+======================= */
+const Breadcrumb = ({ title }) => {
+  const navigate = useNavigate();
+
+  return (
+    <nav className="mb-10 text-sm text-gray-400">
+      <button
+        onClick={() => navigate("/services")}
+        className="hover:text-white transition"
+      >
+        Services
+      </button>
+      <span className="mx-2">/</span>
+      <span className="text-white">{title}</span>
+    </nav>
+  );
+};
+
+/* =======================
+   ENHANCED SERVICE CARD
+======================= */
+const ServiceCard = ({ category }) => {
+  const navigate = useNavigate();
+  const Icon = category.icon;
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      navigate(`/services/${category.id}`);
+    }
+  };
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      aria-label={`View details for ${category.title}`}
+      onClick={() => navigate(`/services/${category.id}`)}
+      onKeyDown={handleKeyDown}
+      className="
+        group relative cursor-pointer rounded-2xl overflow-hidden
+        bg-black/60 backdrop-blur-xl
+        border border-white/10
+        transition-all duration-300
+        hover:-translate-y-2 hover:border-white/20
+        focus:outline-none focus:ring-2 focus:ring-white/30
+      "
+    >
+      {/* Glow */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500">
+        <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-pink-500/20 blur-2xl" />
+      </div>
+
+      {/* View Details */}
+      <div className="absolute top-4 right-4 z-20 flex items-center gap-1 rounded-full bg-black/70 backdrop-blur border border-white/20 px-3 py-1 text-xs text-white opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition">
+        View details
+        <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+      </div>
+
+      {/* Background */}
+      <img
+        src={category.imageUrl}
+        alt={category.title}
+        className="absolute inset-0 w-full h-full object-cover opacity-15 group-hover:opacity-25 transition-opacity duration-500"
+      />
+
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black" />
+
+      {/* Content */}
+      <div className="relative z-10 p-8">
+        <div className="mb-5 inline-flex items-center justify-center rounded-xl bg-white/5 p-3 border border-white/10 transition group-hover:scale-110 group-hover:bg-white/10">
+          <Icon className={`w-8 h-8 ${category.color}`} />
+        </div>
+
+        <h3 className="text-2xl font-bold text-white mb-3">
+          {category.title}
+        </h3>
+
+        <p className="text-gray-400 mb-6 leading-relaxed">
+          {category.description}
+        </p>
+
+        <ul className="space-y-2 text-sm text-gray-300">
+          {category.services.map((service, i) => (
+            <li key={i} className="flex gap-2">
+              <span className="text-white/40">•</span>
+              <span>{service.name}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+/* =======================
    MAIN COMPONENT
 ======================= */
-const ServicesSection = () => {
-  return (
-    <section id="services" className="py-24 bg-black relative">
-      {/* Decorative Blurs */}
-      <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-blue-900/20 blur-[120px] rounded-full pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-purple-900/20 blur-[120px] rounded-full pointer-events-none"></div>
+const Services = () => {
+  const { id } = useParams();
 
-      <div className="container mx-auto px-6 relative z-10">
-        {/* Header */}
+  if (id) {
+    const service = SERVICE_CATEGORIES.find((s) => s.id === id);
+
+    if (!service) {
+      return (
+        <div className="min-h-screen bg-black text-white flex items-center justify-center">
+          Service not found
+        </div>
+      );
+    }
+
+    return (
+      <section className="min-h-screen bg-black text-white px-6 py-24">
+        <div className="max-w-5xl mx-auto">
+          <Breadcrumb title={service.title} />
+
+          <h1 className="text-5xl font-bold mb-6">
+            {service.title}
+          </h1>
+
+          <p className="text-gray-400 text-xl mb-10">
+            {service.description}
+          </p>
+
+          <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {service.services.map((item, i) => (
+              <li
+                key={i}
+                className="border border-white/10 rounded-xl p-4 text-gray-300"
+              >
+                {item.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="py-24 bg-black">
+      <div className="container mx-auto px-6">
         <div className="text-center max-w-3xl mx-auto mb-20">
-          <span className="text-purple-500 font-bold tracking-wider text-sm uppercase mb-2 block">
+          <span className="text-purple-500 font-bold uppercase text-sm">
             Our Expertise
           </span>
-          <h2 className="text-5xl md:text-6xl font-bold mb-6 text-white">
+          <h2 className="text-5xl font-bold text-white mt-4">
             Comprehensive <span className="text-gray-500">Solutions</span>
           </h2>
-          <p className="text-xl text-gray-400 font-light">
-            We leverage cutting-edge technology and creative thinking to deliver
-            services that scale with your ambition.
+          <p className="text-gray-400 text-xl mt-6">
+            We build scalable digital solutions that grow your business.
           </p>
         </div>
 
-        {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {SERVICE_CATEGORIES.map((category) => (
             <ServiceCard key={category.id} category={category} />
@@ -190,4 +274,4 @@ const ServicesSection = () => {
   );
 };
 
-export default ServicesSection;
+export default Services;
