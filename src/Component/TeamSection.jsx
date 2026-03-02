@@ -1,9 +1,10 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Facebook, Dribbble, Twitter, X } from "lucide-react";
+import { Facebook, Dribbble, Twitter, X, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 
+// Assuming these are your local imports. 
 import image from "../assets/Dev4.png";
 import image2 from "../assets/Dev5.jpg";
 import image3 from "../assets/Dev6.png";
@@ -15,10 +16,10 @@ gsap.registerPlugin(ScrollTrigger);
    TEAM DATA
 ========================= */
 const TEAM = [
-  { id: 1, name: "Anne Smith", role: "Officer", image },
-  { id: 2, name: "John Doe", role: "Director", image: image2 },
-  { id: 3, name: "Mellissa Doe", role: "Analyst", image: image3 },
-  { id: 4, name: "Paul Flavius", role: "Coordinator", image: image4 },
+  { id: 1, name: "Anne Smith", role: "Chief Executive Officer", image },
+  { id: 2, name: "John Doe", role: "Creative Director", image: image2 },
+  { id: 3, name: "Mellissa Doe", role: "Lead Analyst", image: image3 },
+  { id: 4, name: "Paul Flavius", role: "Project Coordinator", image: image4 },
 ];
 
 /* =========================
@@ -44,11 +45,11 @@ const useTilt = () => {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    let rotateX = -(y - centerY) / 25;
-    let rotateY = (x - centerX) / 25;
+    let rotateX = -(y - centerY) / 30; // Softened the tilt slightly for a more premium feel
+    let rotateY = (x - centerX) / 30;
 
-    rotateX = gsap.utils.clamp(-6, 6, rotateX);
-    rotateY = gsap.utils.clamp(-6, 6, rotateY);
+    rotateX = gsap.utils.clamp(-8, 8, rotateX);
+    rotateY = gsap.utils.clamp(-8, 8, rotateY);
 
     gsap.to(card, {
       rotateX,
@@ -79,7 +80,7 @@ const ProfileModal = ({ member, onClose }) => (
   <AnimatePresence>
     {member && (
       <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-[#1e2023]/80 backdrop-blur-md p-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -87,32 +88,35 @@ const ProfileModal = ({ member, onClose }) => (
       >
         <motion.div
           onClick={(e) => e.stopPropagation()}
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.9, opacity: 0 }}
-          transition={{ type: "spring", stiffness: 120 }}
-          className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 max-w-lg w-full text-white"
+          initial={{ scale: 0.95, opacity: 0, y: 20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.95, opacity: 0, y: 20 }}
+          transition={{ type: "spring", stiffness: 200, damping: 20 }}
+          className="relative bg-[#1e1f22] border border-[#4c4e51]/40 shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-[2.5rem] p-8 md:p-12 max-w-lg w-full text-white"
         >
+          {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-slate-400 hover:text-white"
+            className="absolute top-6 right-6 text-gray-400 hover:text-white bg-[#4c4e51]/20 hover:bg-[#4c4e51]/50 transition-colors rounded-full p-2"
           >
-            <X />
+            <X size={20} />
           </button>
 
-          <img
-            src={member.image}
-            alt={member.name}
-            className="w-32 h-32 rounded-full mx-auto mb-6 object-cover"
-          />
+          {/* Modal Content */}
+          <div className="flex flex-col items-center">
+            <img
+              src={member.image}
+              alt={member.name}
+              className="w-32 h-32 md:w-40 md:h-40 rounded-full mb-6 object-cover border border-[#4c4e51]/30 shadow-xl"
+            />
+            <h3 className="text-3xl font-serif font-bold text-center mb-1">{member.name}</h3>
+            <p className="text-[#4c4e51] font-medium tracking-wide text-center uppercase text-xs mb-6">{member.role}</p>
 
-          <h3 className="text-2xl font-bold text-center">{member.name}</h3>
-          <p className="text-slate-400 text-center mb-6">{member.role}</p>
-
-          <p className="text-slate-300 text-center text-sm leading-relaxed">
-            Passionate professional focused on creating high-quality digital
-            products with modern technologies.
-          </p>
+            <p className="text-gray-400 text-center text-sm md:text-base leading-relaxed px-4">
+              A passionate professional focused on creating high-quality digital
+              products, blending modern technologies with timeless design principles to elevate the brand experience.
+            </p>
+          </div>
         </motion.div>
       </motion.div>
     )}
@@ -133,32 +137,37 @@ const TeamCard = ({ member, onClick }) => {
       onClick={onClick}
       className="relative cursor-pointer group will-change-transform"
     >
-      {/* Glow */}
-      <div className="absolute -inset-1 bg-gradient-to-br from-cyan-500/30 to-purple-500/30 blur-xl opacity-0 group-hover:opacity-100 transition" />
+      {/* Glass Card - Bento Style */}
+      <div className="relative bg-[#1e1f22] border border-[#4c4e51]/30 rounded-[2rem] p-4 shadow-lg transition-colors duration-500 hover:bg-[#1e2023] hover:border-gray-400/50">
+        
+        <div className="overflow-hidden rounded-[1.5rem] mb-6 relative">
+          <img
+            src={member.image}
+            alt={member.name}
+            className="w-full h-[280px] lg:h-[320px] object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          {/* Subtle image overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1e1f22] to-transparent opacity-60" />
+        </div>
 
-      {/* Glass Card */}
-      <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-4 shadow-2xl">
-        <img
-          src={member.image}
-          alt={member.name}
-          className="w-full h-[320px] object-cover rounded-2xl mb-5"
-        />
+        <div className="px-2 pb-2">
+          <h3 className="text-xl md:text-2xl font-serif text-white mb-1">{member.name}</h3>
+          <p className="text-gray-500 text-xs md:text-sm font-medium mb-6">{member.role}</p>
 
-        <h3 className="text-xl font-bold text-white">{member.name}</h3>
-        <p className="text-slate-400 text-sm mb-4">{member.role}</p>
-
-        <div className="flex gap-3">
-          <Icon><Facebook size={16} /></Icon>
-          <Icon><Dribbble size={16} /></Icon>
-          <Icon><Twitter size={16} /></Icon>
+          <div className="flex gap-2">
+            <Icon><Facebook size={16} /></Icon>
+            <Icon><Dribbble size={16} /></Icon>
+            <Icon><Twitter size={16} /></Icon>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
+/* Icon Component matching the Charcoal theme */
 const Icon = ({ children }) => (
-  <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:border-cyan-400 transition">
+  <div className="w-10 h-10 rounded-full border border-[#4c4e51]/40 flex items-center justify-center text-gray-400 hover:text-[#1e2023] hover:bg-white hover:border-white transition-all duration-300">
     {children}
   </div>
 );
@@ -170,7 +179,7 @@ const TeamSection = () => {
   const sectionRef = useRef(null);
   const [activeMember, setActiveMember] = useState(null);
 
-  /* GSAP PARALLAX */
+  /* GSAP PARALLAX (Subtle Charcoal Gradient) */
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
@@ -195,21 +204,32 @@ const TeamSection = () => {
     <>
       <section
         ref={sectionRef}
-        className="relative bg-black text-white py-40 overflow-hidden"
+        className="relative bg-[#1e2023] text-white py-24 lg:py-32 overflow-hidden border-t border-[#4c4e51]/30 font-sans"
       >
-        {/* 🌌 Aurora Background */}
-        <div className="absolute inset-0 aurora">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/20 blur-[120px] animate-pulse" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 blur-[120px] animate-pulse" />
+        {/* Subtle Charcoal Ambient Glow */}
+        <div className="absolute inset-0 aurora pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#4c4e51]/10 blur-[150px] rounded-full" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-6">
-          <h2 className="text-5xl lg:text-7xl font-extrabold mb-24">
-            The People
-            <br /> Behind the Product
-          </h2>
+        <div className="relative max-w-[1400px] mx-auto px-6 lg:px-12">
+          
+          {/* Header Section */}
+          <div className="mb-16 lg:mb-24 flex flex-col items-center text-center">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#4c4e51]/50 bg-[#1e1f22] px-4 py-2 w-fit">
+              <Sparkles size={14} className="text-gray-400" />
+              <span className="text-xs font-semibold tracking-widest text-gray-300 uppercase">
+                Our Leadership
+              </span>
+            </div>
+            
+            <h2 className="text-4xl md:text-5xl lg:text-7xl font-serif leading-[1.1] tracking-tight">
+              The minds behind <br />
+              <span className="italic font-light text-gray-400">the masterpiece.</span>
+            </h2>
+          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+          {/* Grid Layout */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             {TEAM.map((member) => (
               <TeamCard
                 key={member.id}
@@ -221,7 +241,7 @@ const TeamSection = () => {
         </div>
       </section>
 
-      {/* Modal */}
+      {/* Modal Overlay */}
       <ProfileModal
         member={activeMember}
         onClose={() => setActiveMember(null)}

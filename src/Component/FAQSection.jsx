@@ -8,98 +8,96 @@ import { motion, AnimatePresence } from "framer-motion";
 const FAQS = [
   {
     id: 1,
-    question: "It turned out to be the Hope Diamond?",
+    question: "Do you offer custom digital solutions?",
     answer:
-      "Imagine reaching deep inside you for all the strength and wisdom that you need to make this decision today.",
+      "Yes, every project is tailored specifically to your brand's unique needs, target audience, and long-term goals.",
   },
   {
     id: 2,
-    question: "So why do we do it?",
+    question: "How long does a typical project take?",
     answer:
-      "Because clarity comes from commitment. Once a decision is made, momentum follows.",
+      "Timelines vary based on complexity, but a standard digital transformation or web platform takes roughly 4 to 8 weeks from strategy to launch.",
   },
   {
     id: 3,
-    question: "I am worried about e-mail scams...",
+    question: "I am worried about data security...",
     answer:
-      "We use industry-grade security systems to detect, prevent, and mitigate threats.",
+      "We use industry-grade, enterprise-level encryption and continuous monitoring to ensure your data and customer information remain strictly confidential.",
   },
   {
     id: 4,
-    question: "Why IT Staff Management?",
+    question: "Do you provide post-launch support?",
     answer:
-      "It improves productivity, reduces risk, and allows focus on core business.",
+      "Absolutely. We offer tailored maintenance packages including 24/7 monitoring, regular updates, and proactive issue resolution.",
   },
   {
     id: 5,
-    question: "How secure is our data?",
+    question: "Can our systems scale as we grow?",
     answer:
-      "Enterprise-grade encryption and constant monitoring ensure safety.",
+      "Yes, our architecture is built with scalability in mind, allowing your platforms to handle increased traffic and new features effortlessly.",
   },
   {
     id: 6,
-    question: "Can we scale easily?",
+    question: "What is your pricing model?",
     answer:
-      "Yes, our systems are built for scalability and performance.",
+      "We offer flexible pricing structures including project-based flat fees and retainer models, depending on the scope of your ongoing needs.",
   },
   {
     id: 7,
-    question: "What support is included?",
+    question: "Do you handle content and copywriting?",
     answer:
-      "24/7 monitoring, maintenance, and proactive issue resolution.",
+      "Yes, our team includes expert digital copywriters who ensure your brand voice is consistent and optimized for conversions.",
   },
   {
     id: 8,
-    question: "Why choose your company?",
+    question: "Why choose EllorDigital?",
     answer:
-      "Because we blend strategy, technology, and design for real results.",
+      "Because we blend high-end design aesthetics with robust engineering to deliver digital experiences that actually drive business growth.",
   },
 ];
 
 /* =========================
-   FAQ ITEM
+   FAQ ITEM (Compact Bento Style)
 ========================= */
 const FAQItem = ({ item, index, isActive, onToggle }) => {
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      onClick={onToggle}
       className={`
-        relative cursor-pointer rounded-2xl overflow-hidden
+        relative overflow-hidden rounded-[1.5rem]
         border transition-all duration-500
         ${
           isActive
-            ? "border-blue-400/60 bg-gradient-to-r from-blue-500/20 to-violet-500/20"
-            : "border-white/10 bg-white/[0.02] hover:border-white/20"
+            ? "border-gray-400/50 bg-[#1e2023] shadow-[0_10px_30px_rgba(0,0,0,0.3)]"
+            : "border-[#4c4e51]/30 bg-[#1e1f22] hover:border-[#4c4e51]/80"
         }
       `}
     >
-      {/* GLOW */}
-      {isActive && (
-        <div className="absolute -inset-1 bg-blue-500/20 blur-2xl opacity-60 pointer-events-none" />
-      )}
-
       {/* HEADER */}
-      <div className="relative z-10 flex items-center justify-between px-6 py-6">
-        <h3 className="text-lg font-semibold text-white">
-          <span className="text-blue-400 mr-2">
+      <div 
+        onClick={onToggle}
+        className="relative z-10 flex items-center justify-between px-5 py-4 md:px-6 md:py-5 cursor-pointer select-none"
+      >
+        <h3 className="text-sm md:text-base font-medium text-white flex items-center pr-4">
+          <span className="text-gray-500 font-serif italic mr-4 text-xs md:text-sm">
             {String(index).padStart(2, "0")}
           </span>
           {item.question}
         </h3>
 
+        {/* Toggle Icon */}
         <motion.div
           animate={{ rotate: isActive ? 180 : 0 }}
           className={`
-            w-10 h-10 rounded-full flex items-center justify-center
+            flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center
             border transition-all duration-300
-            ${isActive ? "bg-blue-400 text-black" : "border-white/20 text-white"}
+            ${isActive ? "bg-white border-white text-[#1e2023]" : "border-[#4c4e51]/50 text-gray-400 bg-[#1e2023]"}
           `}
         >
-          {isActive ? <Minus size={18} /> : <Plus size={18} />}
+          {isActive ? <Minus size={16} /> : <Plus size={16} />}
         </motion.div>
       </div>
 
@@ -113,7 +111,7 @@ const FAQItem = ({ item, index, isActive, onToggle }) => {
             transition={{ duration: 0.4, ease: "easeInOut" }}
             className="relative z-10 overflow-hidden"
           >
-            <div className="px-6 pb-6 text-sm text-white/80 leading-relaxed">
+            <div className="px-5 pb-5 md:px-6 md:pb-6 pt-0 text-xs md:text-sm text-gray-400 leading-relaxed ml-7 md:ml-8">
               {item.answer}
             </div>
           </motion.div>
@@ -148,33 +146,36 @@ const FAQSection = () => {
   }, []);
 
   return (
-    <section className="relative bg-black text-white py-32 overflow-hidden">
-      {/* BACKGROUND GLOW */}
-      <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-blue-500/10 blur-[200px]" />
-
-      <div className="relative max-w-7xl mx-auto px-6">
+    <section className="relative bg-[#1e2023] text-white py-16 lg:py-24 overflow-hidden border-t border-[#4c4e51]/30 font-sans">
+      
+      <div className="relative max-w-[1200px] mx-auto px-4 sm:px-6">
+        
         {/* HEADER */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-24"
+          className="text-center mb-12 md:mb-16 flex flex-col items-center"
         >
-          <span className="text-blue-400 font-semibold uppercase tracking-widest text-sm">
-            ✳ FAQ
-          </span>
-          <h2 className="text-5xl lg:text-7xl font-extrabold mt-4">
-            Frequently Asked Questions
+          {/* Elegant Pill Tag */}
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#4c4e51]/50 bg-[#1e1f22] px-3 py-1.5 w-fit">
+            <span className="text-[10px] md:text-xs font-semibold tracking-widest text-gray-300 uppercase">
+              Support
+            </span>
+          </div>
+          
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-white tracking-tight leading-[1.2]">
+            Frequently Asked <br className="hidden sm:block" />
+            <span className="italic font-light text-gray-400">Questions.</span>
           </h2>
-          <p className="mt-6 text-white/60 max-w-xl mx-auto">
-            Everything you need to know before getting started.
-          </p>
         </motion.div>
 
-        {/* GRID */}
-        <div className="grid lg:grid-cols-2 gap-10">
-          <div className="space-y-6">
+        {/* COMPACT GRID */}
+        <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
+          
+          {/* Left Column */}
+          <div className="flex flex-col gap-4 md:gap-6">
             {FAQS.slice(0, 4).map((item, index) => (
               <FAQItem
                 key={item.id}
@@ -186,7 +187,8 @@ const FAQSection = () => {
             ))}
           </div>
 
-          <div className="space-y-6">
+          {/* Right Column */}
+          <div className="flex flex-col gap-4 md:gap-6">
             {FAQS.slice(4).map((item, index) => (
               <FAQItem
                 key={item.id}
@@ -197,6 +199,7 @@ const FAQSection = () => {
               />
             ))}
           </div>
+          
         </div>
       </div>
     </section>
